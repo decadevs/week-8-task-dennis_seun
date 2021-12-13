@@ -45,4 +45,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/current_location" />
 
+    <Button
+        android:id="@+id/show_map_location_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_map_location"
+        android:textAllCaps="false"
+        android:layout_marginTop="32dp"
+        app:backgroundTint="@color/my_local_green"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/get_location_btn" />
+
+    <Button
+        android:id="@+id/show_partner_location_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_partner_location"
+        android:textAllCaps="false"
+        android:layout_marginTop="32dp"
+        app:backgroundTint="@color/my_local_green"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/show_map_location_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

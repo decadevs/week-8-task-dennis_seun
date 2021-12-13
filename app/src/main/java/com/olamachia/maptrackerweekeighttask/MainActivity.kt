@@ -2,6 +2,7 @@ package com.olamachia.maptrackerweekeighttask
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -28,6 +29,13 @@ class MainActivity : AppCompatActivity() {
 
         binding.getLocationBtn.setOnClickListener { checkLocationAccessPermission() }
 
+        binding.showMapLocationBtn.setOnClickListener {
+            startActivity(Intent(applicationContext, MapsActivity::class.java))
+        }
+
+        binding.showPartnerLocationBtn.setOnClickListener {
+            startActivity(Intent(applicationContext, GetMapsLocationActivity::class.java))
+        }
     }
 
     private fun getLocationUpdates() {
