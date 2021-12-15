@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "827021495697",
+    "firebase_url": "https://location-tracker-2411b-default-rtdb.firebaseio.com",
+    "project_id": "location-tracker-2411b",
+    "storage_bucket": "location-tracker-2411b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827021495697:android:04ec8f8a8298a974cdde30",
+        "android_client_info": {
+          "package_name": "com.olamachia.maptrackerweekeighttask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827021495697-mb128domq49fl7i53mpnhl3spjdhtptt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.olamachia.maptrackerweekeighttask",
+            "certificate_hash": "ae4c8594381d7817e82e920b5b982de490f6634a"
+          }
+        },
+        {
+          "client_id": "827021495697-4gmava9parcuaorlljhtnd15gp3te9tt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADfKHR7E8VL97e9HEIqiJxaAJcxwR6TvA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827021495697-4gmava9parcuaorlljhtnd15gp3te9tt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

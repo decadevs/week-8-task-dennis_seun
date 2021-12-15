@@ -1,0 +1,24 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=AE:4C:85:94:38:1D:78:17:E8:2E:92:0B:5B:98:2D:E4:90:F6:63:4A%3Bcom.olamachia.maptrackerweekeighttask
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    com.olamachia.maptrackerweekeighttask
+
+    SHA-1 certificate fingerprint:
+    AE:4C:85:94:38:1D:78:17:E8:2E:92:0B:5B:98:2D:E4:90:F6:63:4A
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAtP1BT9kYInqMVJdI2a507TXXIi5uZA-k</string>
+</resources>
