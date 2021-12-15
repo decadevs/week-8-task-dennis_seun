@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">MapTrackerWeekEightTask</string>
     <string name="find_current_location">Find current location of my device</string>
-    <string name="current_location">current location</string>
+    <string name="current_location">Current location</string>
     <string name="show_location">Show location</string>
     <string name="location_access_required">Location Access Required</string>
     <string name="permission_granted">Permission granted</string>
     <string name="permission_denied">Permission denied</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="show_map_location">Show location in map</string>
-    <string name="title_activity_get_maps_locattion">GetMapsLocattionActivity</string>
+    <string name="title_activity_get_maps_location">GetMapsLocationActivity</string>
     <string name="find_user_s_location">Find User\'s location</string>
     <string name="show_partner_location">Show partner\'s location</string>
 </resources>

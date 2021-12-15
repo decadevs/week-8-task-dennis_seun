@@ -34,7 +34,7 @@
         <activity
             android:name=".GetMapsLocationActivity"
             android:exported="false"
-            android:label="@string/title_activity_get_maps_locattion" />
+            android:label="@string/title_activity_get_maps_location" />
         <activity
             android:name=".MapsActivity"
             android:exported="false"

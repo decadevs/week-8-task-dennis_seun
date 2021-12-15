@@ -5,19 +5,22 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.olamachia.maptrackerweekeighttask.databinding.ActivityMapsBinding
+import com.olamachia.maptrackerweekeighttask.models.LocationInfo
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -25,6 +28,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private lateinit var reference: DatabaseReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +44,47 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        reference = database.getReference("Dennis")
+        reference = Firebase.database.reference
+        reference.addValueEventListener(locationListener)
+
         setupLocationClient()
+    }
+
+    private val locationListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            if(snapshot.exists()){
+                //get the exact longitude and latitude from the database "test"
+                val partnerLocation = snapshot.child("Dennis").getValue(LocationInfo::class.java)
+                val partnerLocationLatitude = partnerLocation!!.latitude
+                val partnerLocationLongitude = partnerLocation.longitude
+
+                //trigger reading of location from database using the button
+                binding.findLocationBtn.setOnClickListener {
+
+                    // check if the latitude and longitude is not null
+                    if (partnerLocationLatitude != null && partnerLocationLongitude != null){
+                        // create a LatLng object from location
+                        val latLng = LatLng(partnerLocationLatitude, partnerLocationLongitude)
+                        //create a marker at the read location and display it on the map
+                        myMap.addMarker(MarkerOptions().position(latLng)
+                            .title("Dennis is here"))
+                        //specify how the map camera is updated
+                        val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
+                        //update the camera with the CameraUpdate object
+                        myMap.moveCamera(update)
+
+                    } else {
+                        // if location is null , log an error message
+                        Log.e(TAG, "Your partner's location cannot be found")
+                    }
+                }
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Toast.makeText(applicationContext, "Could not read from the database", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupLocationClient() {
@@ -73,22 +120,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 // lastLocation is a task running in the background
                 val location = it.result
 
-                val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-                val reference: DatabaseReference = database.getReference("test")
+                reference = database.getReference("Seun")
 
                 if (location != null){
                     val locationCoordinates = LatLng(location.latitude, location.longitude)
 
                     //create a marker at the exact location
                     myMap.addMarker(MarkerOptions().position(locationCoordinates)
-                        .title("You are currently here"))
+                        .title("Seun is currently here"))!!
+                        .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_seun))
 
                     // create an object that will specify how the camera will be updated
                     val update = CameraUpdateFactory.newLatLngZoom(locationCoordinates, 16.0F)
                     myMap.moveCamera(update)
 
                     //Save the location data to the database
-                    reference.setValue(location)
+                    reference.setValue(locationCoordinates)
                 } else{
                     Log.e(TAG, "No location found")
                 }

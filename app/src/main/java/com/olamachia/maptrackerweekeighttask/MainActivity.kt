@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, MapsActivity::class.java))
         }
 
-        binding.showPartnerLocationBtn.setOnClickListener {
-            startActivity(Intent(applicationContext, GetMapsLocationActivity::class.java))
-        }
+//        binding.showPartnerLocationBtn.setOnClickListener {
+//            startActivity(Intent(applicationContext, GetMapsLocationActivity::class.java))
+//        }
     }
 
     private fun getLocationUpdates() {
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         val locationListener = LocationListener { location -> reverseGeolocationCode(location) }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1.2f, locationListener)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 1.2f, locationListener)
     }
 
     private fun checkLocationAccessPermission(){
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         val geocoder = Geocoder(this, Locale.getDefault())
         val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 2)
         val address = addresses[0]
-        "Current location of your device is: \n${address.getAddressLine(0)}\n${address.locality }".also { binding.currentLocation.text = it }
+        "Current location of your device is: \n${address.getAddressLine(0)}\n${address.locality } \nLatitude: ${address.latitude} \nLongitude: ${address.longitude}".also { binding.currentLocation.text = it }
     }
 
     companion object{
