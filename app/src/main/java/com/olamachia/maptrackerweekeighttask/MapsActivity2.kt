@@ -1,6 +1,7 @@
 package com.olamachia.maptrackerweekeighttask
 
 import android.Manifest
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -8,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,40 +20,44 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
 class MapsActivity2 : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mapFrag: SupportMapFragment
     private lateinit var mLocationRequest: LocationRequest
-    private lateinit var mLastLocation: Location
     var mCurrLocationMarker: Marker? = null
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    var fireBaseReference  = FirebaseDatabase.getInstance().reference
+    var fireBaseReference  = FirebaseDatabase.getInstance()
+    private lateinit var reference : DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps2)
 
-        supportActionBar!!.title = "Google Map Sms"
+        supportActionBar!!.title = "Dennis Maps"
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mapFrag = (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?)!!
         mapFrag!!.getMapAsync(this)
 
-
+        reference=  fireBaseReference.getReference("Seun")
+        reference = Firebase.database.reference
+        reference.addValueEventListener(partnerCallback)
 
     }
 
 
-    public override fun onPause() {
-        super.onPause()
-        //stop location updates when Activity is no longer active
+    override fun onStop() {
+        super.onStop()
         if (mFusedLocationClient != null) {
             mFusedLocationClient!!.removeLocationUpdates(mLocationCallback)
         }
     }
+
 
 
 
@@ -64,16 +70,16 @@ class MapsActivity2 : AppCompatActivity(), OnMapReadyCallback {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
+                    this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+//                    mFusedLocationClient.lastLocation.addOnCompleteListener {
+//
+//                    }
                 //Location Permission already granted
                 mFusedLocationClient!!.requestLocationUpdates(
                     mLocationRequest!!, mLocationCallback,
-                    Looper.myLooper()!!
-                )
+                    Looper.myLooper()!!)
                 mGoogleMap!!.isMyLocationEnabled = true
             } else {
                 //Request Location Permission
@@ -95,11 +101,6 @@ class MapsActivity2 : AppCompatActivity(), OnMapReadyCallback {
 
             val location = locationResult.lastLocation
 
-//            if (locationList.size > 0) {
-//
-//                //The last location in the list is the newest
-//                val location = locationList[locationList.size - 1]
-
                 if (mCurrLocationMarker != null) {
                     mCurrLocationMarker!!.remove()
                  }
@@ -107,11 +108,10 @@ class MapsActivity2 : AppCompatActivity(), OnMapReadyCallback {
                 //move map camera
                 val dennisLocation = LatLng(location.latitude, location.longitude)
 
-                var seunLocation = LatLng(location.latitude, location.longitude)
-
-            fireBaseReference.child("Dennis").setValue(dennisLocation)
+            fireBaseReference.reference.child("Dennis").setValue(dennisLocation)
 
             //create a marker at the exact location
+
             mGoogleMap.addMarker(
                 MarkerOptions().position(dennisLocation)
                 .title(" I am currently here"))!!
@@ -129,27 +129,49 @@ class MapsActivity2 : AppCompatActivity(), OnMapReadyCallback {
 
 
 
+    private var partnerCallback = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            if(snapshot.exists()){
+                //get the exact longitude and latitude from the database "test"
+                val seunLocation = snapshot.child("Seun").getValue(LocationInfo::class.java)
 
+                val seunLatitude = seunLocation!!.latitude
+                val seunLongitude = seunLocation.longitude
+                //trigger reading of location from database using the button
 
+                    // check if the latitude and longitude is not null
+                    if (seunLatitude != null && seunLongitude != null){
+                        // create a LatLng object from location
+                        val latLng = LatLng(seunLatitude, seunLongitude)
 
+                        //create a marker at the read location and display it on the map
+                        mGoogleMap.clear()
+                        mGoogleMap.addMarker(MarkerOptions().position(latLng)
+                            .title("Your partner is here"))
+                        //specify how the map camera is updated
 
+                        val update = CameraUpdateFactory.newLatLngZoom(latLng, 17f)
+                        //update the camera with the CameraUpdate object
+                        mGoogleMap.moveCamera(update)
 
+                    } else {
+                        // if location is null , log an error message
+                        Log.e(TAG, "Your partner's location cannot be found")
+                    }
 
+            }
+        }
 
-
-
-
-
-
-
-
+        override fun onCancelled(error: DatabaseError) {
+            Toast.makeText(applicationContext, "Could not read from the database", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
-
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
@@ -219,7 +241,7 @@ class MapsActivity2 : AppCompatActivity(), OnMapReadyCallback {
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                     finish()
-                    System.exit(0)
+
                 }
             }
         }
